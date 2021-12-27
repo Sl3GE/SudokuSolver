@@ -1,8 +1,9 @@
 import copy
+from typing import List
 
 
 class Sudoku:
-    def __init__(self, board: list[list[str]]):
+    def __init__(self, board: List[List[str]]):
         self.board = board
 
     def __str__(self):
@@ -40,6 +41,7 @@ class Sudoku:
 
     def getNextSlotRules(self):
         rules = []
+        amtOfRules = 10
         for i in range(9):
             for j in range(9):
                 if (self.board[i][j] == ""):
@@ -52,15 +54,18 @@ class Sudoku:
                         slot = self.board[row][j]
                         if (slot in availableValues):
                             availableValues.remove(slot)
-                    for k in availableValues:
-                        rules.append([i, j, int(k)])
-                    return rules
+                    availableSize = len(availableValues)
+                    if (availableSize < amtOfRules):
+                        rules = []
+                        for k in availableValues:
+                            rules.append([i, j, int(k)])
+                        amtOfRules = availableSize
         return rules
 
-    def applyRule(self, rule: list[int]):
-        newBoard = copy.deepcopy(self.board)
-        newBoard[rule[0]][rule[1]] = str(rule[2])
-        return Sudoku(newBoard)
+    def applyRule(self, rule: List[int]):
+        newSudoku = copy.deepcopy(self)
+        newSudoku.board[rule[0]][rule[1]] = str(rule[2])
+        return newSudoku
 
     def isBoardValid(self):
         # First, Check Rows
@@ -142,7 +147,7 @@ class Sudoku:
         return(lines)
 
 
-def sudokuBacktrackSolver(stateList: list[Sudoku], depth: int):
+def sudokuBacktrackSolver(stateList: List[Sudoku], depth: int):
     state: Sudoku = stateList[0]
     if (state.isBoardComplete()):
         return state
