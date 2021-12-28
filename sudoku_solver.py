@@ -7,6 +7,14 @@ class Sudoku:
         self.board = board
 
     def __str__(self):
+        result = ""
+        for row in self.board:
+            for i in range(8):
+                result += row[i]+","
+            result += row[8]+"\n"
+        return result
+
+    def getGrid(self):
         boxLayerStr = "+---+---+---+"
         result = boxLayerStr
         for i in range(0, 9, 3):
@@ -39,6 +47,7 @@ class Sudoku:
                         rules.append([i, j, k])
         return rules
 
+    # O(n^2)
     def getNextSlotRules(self):
         rules = []
         amtOfRules = 10
@@ -165,16 +174,23 @@ def sudokuBacktrackSolver(stateList: List[Sudoku], depth: int):
 if __name__ == "__main__":
     import sys
     args = sys.argv
-    if (len(args) > 1):
-        fileName = args[1]
-        tempBoard = Sudoku.createBoard(Sudoku.readSudokuFromFile(fileName))
+    numOfArgs = len(args)
+    if (numOfArgs == 1):
+        print("Filename not provided")
     else:
-        # solution:
-        # tempBoard = Sudoku.createBoard(
-        #    "5,3,4,6,7,8,9,1,2\n6,7,2,1,9,5,3,4,8\n1,9,8,3,4,2,5,6,7\n8,5,9,7,6,1,4,2,3\n4,2,6,8,5,3,7,9,1\n7,1,3,9,2,4,8,5,6\n9,6,1,5,3,7,2,8,4\n2,8,7,4,1,9,6,3,5,\n3,4,5,2,8,6,1,7,9")
-        tempBoard = Sudoku.createBoard(
-            "5,3,,,7,,,,\n6,,,1,9,5,,,\n,9,8,,,,,6,\n8,,,,6,,,,3\n4,,,8,,3,,,1\n7,,,,2,,,,6\n,6,,,,,2,8,\n,,,4,1,9,,,5\n,,,,8,,,7,9")
-    sudoku = Sudoku(tempBoard)
-    print("Initial Board:\n" + str(sudoku))
-    result = sudokuBacktrackSolver([sudoku], 0)
-    print("\nSolution Board:\n" + str(result))
+        outputType = "c"
+        if (numOfArgs > 2 and args[2] in ["f", "file"]):
+            outputType = "f"
+        fileName = args[1]
+        fileInput = Sudoku.readSudokuFromFile("in/"+fileName)
+        tempBoard = Sudoku.createBoard(fileInput)
+        sudoku = Sudoku(tempBoard)
+        result = sudokuBacktrackSolver([sudoku], 0)
+        if (outputType == "c"):
+            print("Initial Board:\n" + sudoku.getGrid())
+            print("\nSolution Board:\n" + result.getGrid())
+        else:
+            newFileName = fileName[:-4]+"_solution"+fileName[-4:]
+            newFile = open("out/"+newFileName, "w")
+            newFile.write("Input:\n"+fileInput+"\nSolution:\n"+str(result))
+            newFile.close()
