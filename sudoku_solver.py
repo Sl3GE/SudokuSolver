@@ -1,8 +1,8 @@
-from typing import List
+import copy
 from Sudoku import Sudoku
 
 
-def sudokuBacktrackSolver(stateList: List[Sudoku], depth: int):
+def sudokuBacktrackSolver(stateList: list[Sudoku], depth: int):
     state: Sudoku = stateList[0]
     if (state.isBoardComplete()):
         return state

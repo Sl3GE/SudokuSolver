@@ -1,11 +1,12 @@
 import copy
-
+ 
 
 class Sudoku:
-    def __init__(self, board: List[List[str]]):
+    def __init__(self, board: list[list[str]]):
         self.board = board
+        return
 
-    def __str__(self):
+    def __str__(self) -> str:
         result = ""
         for row in self.board:
             for i in range(8):
@@ -13,7 +14,12 @@ class Sudoku:
             result += row[8]+"\n"
         return result
 
-    def getGrid(self):
+    def __eq__(self, obj) -> bool:
+        if (not isinstance(obj, Sudoku)):
+            return False
+        return self.board == obj.board
+
+    def getGrid(self) -> str:
         boxLayerStr = "+---+---+---+"
         result = boxLayerStr
         for i in range(0, 9, 3):
@@ -32,12 +38,7 @@ class Sudoku:
             result += boxLayerStr
         return result
 
-    def __eq__(self, obj):
-        if (not isinstance(obj, Sudoku)):
-            return False
-        return self.board == obj.board
-
-    def getAllRules(self):
+    def getAllRules(self) -> list[list[int]]:
         rules = []
         for i in range(9):
             for j in range(9):
@@ -47,7 +48,7 @@ class Sudoku:
         return rules
 
     # O(n^2)
-    def getNextSlotRules(self):
+    def getNextSlotRules(self) -> list[list[int]]:
         rules = []
         amtOfRules = 10
         for i in range(9):
@@ -70,7 +71,7 @@ class Sudoku:
                         amtOfRules = availableSize
         return rules
 
-    def applyRule(self, rule: List[int]):
+    def applyRule(self, rule: list[int]) :
         newSudoku = copy.deepcopy(self)
         newSudoku.board[rule[0]][rule[1]] = str(rule[2])
         return newSudoku
@@ -106,7 +107,7 @@ class Sudoku:
                             squareItems.add(slot)
         return True
 
-    def isBoardComplete(self):
+    def isBoardComplete(self) -> bool:
         # First, Check Rows
         for row in self.board:
             rowItems = set()
@@ -137,7 +138,7 @@ class Sudoku:
         return True
 
     @staticmethod
-    def createBoard(config: str):
+    def createBoard(config: str) -> list[list[str]]:
         newBoard: list[list[str]]
         newBoard = []
         rows = config.split("\n")
@@ -146,10 +147,10 @@ class Sudoku:
         return newBoard
 
     @staticmethod
-    def readSudokuFromFile(fileName: str):
+    def readSudokuFromFile(fileName: str) -> str:
         f = open(fileName, "r")
         lines = ""
         for i in range(9):
             lines += f.readline()
         f.close()
-        return(lines)
+        return lines
