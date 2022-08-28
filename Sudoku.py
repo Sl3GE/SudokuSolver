@@ -71,7 +71,14 @@ class Sudoku:
                         amtOfRules = availableSize
         return rules
 
-    def applyRule(self, rule: list[int]) :
+
+    def applyRule(self, rule: list[int]):
+        """Apply rule to Sudoku board to make move
+        
+        Rule should be in the form of [int, int, int]
+        where each int is represented by the following
+        [row, column, value].
+        """
         newSudoku = copy.deepcopy(self)
         newSudoku.board[rule[0]][rule[1]] = str(rule[2])
         return newSudoku
