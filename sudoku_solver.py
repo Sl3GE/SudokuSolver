@@ -1,6 +1,6 @@
 import copy
 from Sudoku import Sudoku
-
+from utils import writeToFile
 
 def sudokuBacktrackSolver(stateList: list[Sudoku], depth: int):
     state: Sudoku = stateList[0]
@@ -37,6 +37,4 @@ if __name__ == "__main__":
             print("\nSolution Board:\n" + result.getGrid())
         else:
             newFileName = fileName[:-4]+"_solution"+fileName[-4:]
-            newFile = open("out/"+newFileName, "w")
-            newFile.write("Input:\n"+fileInput+"\nSolution:\n"+str(result))
-            newFile.close()
+            writeToFile(newFileName, "Input:\n"+fileInput+"\nSolution:\n"+str(result))

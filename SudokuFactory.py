@@ -1,6 +1,8 @@
+from fileinput import filename
 from random import Random
 from Sudoku import Sudoku
 from sudoku_solver import sudokuBacktrackSolver
+from utils import getRandGenChars, writeToFile
 
 class SudokuFactory:
     
@@ -50,10 +52,9 @@ if __name__ == "__main__":
     if (outputType == "c"):
         print(sudoku.getGrid())
     else:
-        # TODO: add code for generating filenames based on datetime and possibly random characters
-        # newFileName = fileName[:-4]+"_solution"+fileName[-4:]
-        # newFile = open("out/"+newFileName, "w")
-        # newFile.write("Input:\n"+fileInput+"\nSolution:\n"+str(result))
-        # newFile.close()
+        # TODO: add code to generate csv version of sudoku board
+        fileName = "board_"+getRandGenChars()+".csv"
+        writeToFile(fileName,sudoku.getGrid())
+        print("Outputed new sudoku board to file: "+fileName)
         exit(0)
     
