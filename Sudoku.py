@@ -37,6 +37,19 @@ class Sudoku:
                 result += "\n"
             result += boxLayerStr
         return result
+    
+    def toCsv(self) -> str:
+        result = ""
+        for row in self.board:
+            first = True
+            for slot in row:
+                if first:
+                    first = False
+                else:
+                    result += ","
+                result += slot
+            result += "\n"
+        return result
 
     def getAllRules(self) -> list[list[int]]:
         rules = []

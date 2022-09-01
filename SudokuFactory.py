@@ -54,7 +54,7 @@ if __name__ == "__main__":
     else:
         # TODO: add code to generate csv version of sudoku board
         fileName = "board_"+getRandGenChars()+".csv"
-        writeToFile(fileName,sudoku.getGrid())
+        writeToFile(fileName,sudoku.toCsv())
         print("Outputed new sudoku board to file: "+fileName)
         exit(0)
     
