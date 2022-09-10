@@ -1,4 +1,5 @@
 import copy
+from math import floor
  
 
 class Sudoku:
@@ -95,6 +96,48 @@ class Sudoku:
         newSudoku = copy.deepcopy(self)
         newSudoku.board[rule[0]][rule[1]] = str(rule[2])
         return newSudoku
+    
+    def applyRuleSafely(self, rule: tuple[int,int,int]) -> bool:
+        """Apply rule safely to Sudoku board to make move
+        
+        Rule should be in the form of (int,int,int)
+        where each int is represented by the following
+        (row, column, value).
+        
+        It applies the rule safely by also checking if the
+        move was valid. If the move breaks any of the
+        sudoku rules or a digit already exists in that position,
+        then it won't apply the rule and will return False.
+        Otherwise, it will apply the rule and return True.
+        """
+        if (self.board[rule[0]][rule[1]] != ""):
+            return False
+        self.board[rule[0]][rule[1]] = str(rule[2])
+        return self.isSlotValid((rule[0],rule[1]))
+
+    def isSlotValid(self, slotPos: tuple[int,int]) -> bool:
+        slotRow = slotPos[0]
+        slotCol = slotPos[1]
+        slotValue = self.board[slotRow][slotCol]
+        # Check Row
+        for c in range(9):
+            if (slotCol != c and slotValue == self.board[slotRow][c]):
+                return False
+        # Check Col
+        for r in range(9):
+            if (slotRow != r and slotValue == self.board[r][slotCol]):
+                return False
+        # Check Square
+        squarePos = (floor(slotRow/3)*3, floor(slotCol/3)*3)
+        squareItems = set()
+        for k in range(3):
+            for l in range(3):
+                tempSlot = self.board[squarePos[0]+k][squarePos[1]+l]
+                if (tempSlot in squareItems):
+                    return False
+                if (tempSlot != ""):
+                    squareItems.add(tempSlot)
+        return True
 
     def isBoardValid(self):
         # First, Check Rows
