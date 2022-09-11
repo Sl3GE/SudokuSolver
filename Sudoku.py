@@ -1,7 +1,12 @@
 import copy
+from math import floor
  
 
 class Sudoku:
+    __availableSlotValues = {"1", "2", "3",
+                        "4", "5", "6", "7", "8", "9"}
+    
+    
     def __init__(self, board: list[list[str]]):
         self.board = board
         return
@@ -59,16 +64,23 @@ class Sudoku:
                     for k in range(1, 10):
                         rules.append([i, j, k])
         return rules
+    
+    # TODO: Make "getAvailableSlots()"
 
     # O(n^2)
     def getNextSlotRules(self) -> list[list[int]]:
+        '''
+        Returns the availables Rules (Moves) for the slot
+        with the least amount of move available
+        '''
         rules = []
         amtOfRules = 10
+        # TODO: Refactor to go through all of one column, row, or square at once and keep its value available the whole time
+        # I suggest square
         for i in range(9):
             for j in range(9):
                 if (self.board[i][j] == ""):
-                    availableValues = {"1", "2", "3",
-                                       "4", "5", "6", "7", "8", "9"}
+                    availableValues = self.__availableSlotValues.copy()
                     for slot in self.board[i]:
                         if (slot in availableValues):
                             availableValues.remove(slot)
@@ -76,12 +88,22 @@ class Sudoku:
                         slot = self.board[row][j]
                         if (slot in availableValues):
                             availableValues.remove(slot)
+                            
+                    squarePos = (floor(i/3)*3, floor(j/3)*3)
+                    for k in range(3):
+                        for l in range(3):
+                            slot = self.board[squarePos[0]+k][squarePos[1]+l]
+                            if (slot in availableValues):
+                                availableValues.remove(slot)
+                    
                     availableSize = len(availableValues)
-                    if (availableSize < amtOfRules):
+                    if (availableSize > 0 and availableSize < amtOfRules):
+                        amtOfRules = availableSize
                         rules = []
                         for k in availableValues:
                             rules.append([i, j, int(k)])
-                        amtOfRules = availableSize
+                        if (amtOfRules == 1):
+                            return rules
         return rules
 
 
@@ -95,6 +117,51 @@ class Sudoku:
         newSudoku = copy.deepcopy(self)
         newSudoku.board[rule[0]][rule[1]] = str(rule[2])
         return newSudoku
+    
+    def applyRuleSafely(self, rule: tuple[int,int,int]) -> bool:
+        """Apply rule safely to Sudoku board to make move
+        
+        Rule should be in the form of (int,int,int)
+        where each int is represented by the following
+        (row, column, value).
+        
+        It applies the rule safely by also checking if the
+        move was valid. If the move breaks any of the
+        sudoku rules or a digit already exists in that position,
+        then it won't apply the rule and will return False.
+        Otherwise, it will apply the rule and return True.
+        """
+        if (self.board[rule[0]][rule[1]] != ""):
+            return False
+        self.board[rule[0]][rule[1]] = str(rule[2])
+        if (self.isSlotValid((rule[0],rule[1]))):
+            return True
+        self.board[rule[0]][rule[1]] = ""
+        return False
+
+    def isSlotValid(self, slotPos: tuple[int,int]) -> bool:
+        slotRow = slotPos[0]
+        slotCol = slotPos[1]
+        slotValue = self.board[slotRow][slotCol]
+        
+        for i in range(9):
+            # Check Col Slot
+            if (slotCol != i and slotValue == self.board[slotRow][i]):
+                return False
+            # Check Row Slot
+            if (slotRow != i and slotValue == self.board[i][slotCol]):
+                return False
+        # Check Square
+        squarePos = (floor(slotRow/3)*3, floor(slotCol/3)*3)
+        squareItems = set()
+        for k in range(3):
+            for l in range(3):
+                tempSlot = self.board[squarePos[0]+k][squarePos[1]+l]
+                if (tempSlot in squareItems):
+                    return False
+                if (tempSlot != ""):
+                    squareItems.add(tempSlot)
+        return True
 
     def isBoardValid(self):
         # First, Check Rows
