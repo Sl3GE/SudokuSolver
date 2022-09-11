@@ -1,13 +1,10 @@
 import copy
 from math import floor
- 
+
+AVAILABLE_SUDOKU_SLOT_VALUES = {num for num in range(1,10)}
 
 class Sudoku:
-    __availableSlotValues = {"1", "2", "3",
-                        "4", "5", "6", "7", "8", "9"}
-    
-    
-    def __init__(self, board: list[list[str]]):
+    def __init__(self, board: list[list[int]]):
         self.board = board
         return
 
@@ -15,8 +12,8 @@ class Sudoku:
         result = ""
         for row in self.board:
             for i in range(8):
-                result += row[i]+","
-            result += row[8]+"\n"
+                result += str(row[i])+","
+            result += str(row[8])+"\n"
         return result
 
     def __eq__(self, obj) -> bool:
@@ -34,10 +31,7 @@ class Sudoku:
                 for k in range(0, 9, 3):
                     for l in range(3):
                         value = self.board[i+j][k+l]
-                        if (value == ""):
-                            result += " "
-                        else:
-                            result += str(self.board[i+j][k+l])
+                        result += str(value) if value != 0 else " "
                     result += "|"
                 result += "\n"
             result += boxLayerStr
@@ -52,7 +46,7 @@ class Sudoku:
                     first = False
                 else:
                     result += ","
-                result += slot
+                result += str(slot) if slot != 0 else ""
             result += "\n"
         return result
 
@@ -60,7 +54,7 @@ class Sudoku:
         rules = []
         for i in range(9):
             for j in range(9):
-                if (self.board[i][j] == ""):
+                if (self.board[i][j] == 0):
                     for k in range(1, 10):
                         rules.append([i, j, k])
         return rules
@@ -79,8 +73,8 @@ class Sudoku:
         # I suggest square
         for i in range(9):
             for j in range(9):
-                if (self.board[i][j] == ""):
-                    availableValues = self.__availableSlotValues.copy()
+                if (self.board[i][j] == 0):
+                    availableValues = AVAILABLE_SUDOKU_SLOT_VALUES.copy()
                     for slot in self.board[i]:
                         if (slot in availableValues):
                             availableValues.remove(slot)
@@ -101,7 +95,7 @@ class Sudoku:
                         amtOfRules = availableSize
                         rules = []
                         for k in availableValues:
-                            rules.append([i, j, int(k)])
+                            rules.append([i, j, k])
                         if (amtOfRules == 1):
                             return rules
         return rules
@@ -115,7 +109,7 @@ class Sudoku:
         [row, column, value].
         """
         newSudoku = copy.deepcopy(self)
-        newSudoku.board[rule[0]][rule[1]] = str(rule[2])
+        newSudoku.board[rule[0]][rule[1]] = rule[2]
         return newSudoku
     
     def applyRuleSafely(self, rule: tuple[int,int,int]) -> bool:
@@ -131,12 +125,12 @@ class Sudoku:
         then it won't apply the rule and will return False.
         Otherwise, it will apply the rule and return True.
         """
-        if (self.board[rule[0]][rule[1]] != ""):
+        if (self.board[rule[0]][rule[1]] != 0):
             return False
-        self.board[rule[0]][rule[1]] = str(rule[2])
+        self.board[rule[0]][rule[1]] = rule[2]
         if (self.isSlotValid((rule[0],rule[1]))):
             return True
-        self.board[rule[0]][rule[1]] = ""
+        self.board[rule[0]][rule[1]] = 0
         return False
 
     def isSlotValid(self, slotPos: tuple[int,int]) -> bool:
@@ -159,7 +153,7 @@ class Sudoku:
                 tempSlot = self.board[squarePos[0]+k][squarePos[1]+l]
                 if (tempSlot in squareItems):
                     return False
-                if (tempSlot != ""):
+                if (tempSlot != 0):
                     squareItems.add(tempSlot)
         return True
 
@@ -170,7 +164,7 @@ class Sudoku:
             for slot in row:
                 if (slot in rowItems):
                     return False
-                if (slot != ""):
+                if (slot != 0):
                     rowItems.add(slot)
         # Second, Check Cols
         for col in range(9):
@@ -179,7 +173,7 @@ class Sudoku:
                 slot = self.board[row][col]
                 if (slot in colItems):
                     return False
-                if (slot != ""):
+                if (slot != 0):
                     colItems.add(slot)
         # Third, Check Squares
         for i in range(0, 9, 3):
@@ -190,7 +184,7 @@ class Sudoku:
                         slot = self.board[i+k][j+l]
                         if (slot in squareItems):
                             return False
-                        if (slot != ""):
+                        if (slot != 0):
                             squareItems.add(slot)
         return True
 
@@ -201,7 +195,7 @@ class Sudoku:
             for slot in row:
                 if (slot in rowItems):
                     return False
-                if (slot == ""):
+                if (slot == 0):
                     return False
                 rowItems.add(slot)
         # Second, Check Cols
@@ -225,12 +219,12 @@ class Sudoku:
         return True
 
     @staticmethod
-    def createBoard(config: str) -> list[list[str]]:
-        newBoard: list[list[str]]
+    def createBoard(config: str) -> list[list[int]]:
+        newBoard: list[list[int]]
         newBoard = []
         rows = config.split("\n")
         for i in range(9):
-            newBoard.append(rows[i].split(","))
+            newBoard.append([(int(slot) if slot != "" else 0) for slot in rows[i].split(",")])
         return newBoard
 
     @staticmethod

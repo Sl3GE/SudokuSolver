@@ -21,14 +21,14 @@ class SudokuFactory:
         return self.__random.randint(0,8)
     
     def createSudoku(self) -> Sudoku:
-        boardMatrix = [["" for i in range(9)] for j in range(9)]
+        boardMatrix = [[0 for i in range(9)] for j in range(9)]
         sudoku = Sudoku(boardMatrix)
         result = sudokuBacktrackSolver([sudoku],0)
         numOfRemovals = 20 + (self.difficulty * 8)
         for i in range(numOfRemovals):
             col = self.__genRandomSudokuNum__()
             row = self.__genRandomSudokuNum__()
-            result = result.applyRule([row,col,""])
+            result = result.applyRule([row,col,0])
         return result
 
 if __name__ == "__main__":
