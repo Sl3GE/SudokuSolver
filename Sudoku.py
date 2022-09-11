@@ -113,19 +113,22 @@ class Sudoku:
         if (self.board[rule[0]][rule[1]] != ""):
             return False
         self.board[rule[0]][rule[1]] = str(rule[2])
-        return self.isSlotValid((rule[0],rule[1]))
+        if (self.isSlotValid((rule[0],rule[1]))):
+            return True
+        self.board[rule[0]][rule[1]] = ""
+        return False
 
     def isSlotValid(self, slotPos: tuple[int,int]) -> bool:
         slotRow = slotPos[0]
         slotCol = slotPos[1]
         slotValue = self.board[slotRow][slotCol]
-        # Check Row
-        for c in range(9):
-            if (slotCol != c and slotValue == self.board[slotRow][c]):
+        
+        for i in range(9):
+            # Check Col Slot
+            if (slotCol != i and slotValue == self.board[slotRow][i]):
                 return False
-        # Check Col
-        for r in range(9):
-            if (slotRow != r and slotValue == self.board[r][slotCol]):
+            # Check Row Slot
+            if (slotRow != i and slotValue == self.board[i][slotCol]):
                 return False
         # Check Square
         squarePos = (floor(slotRow/3)*3, floor(slotCol/3)*3)
