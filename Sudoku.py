@@ -3,6 +3,10 @@ from math import floor
  
 
 class Sudoku:
+    __availableSlotValues = {"1", "2", "3",
+                        "4", "5", "6", "7", "8", "9"}
+    
+    
     def __init__(self, board: list[list[str]]):
         self.board = board
         return
@@ -60,16 +64,21 @@ class Sudoku:
                     for k in range(1, 10):
                         rules.append([i, j, k])
         return rules
+    
+    # TODO: Make "getAvailableSlots()"
 
     # O(n^2)
     def getNextSlotRules(self) -> list[list[int]]:
+        '''
+        Returns the availables Rules (Moves) for the slot
+        with the least amount of move available
+        '''
         rules = []
         amtOfRules = 10
         for i in range(9):
             for j in range(9):
                 if (self.board[i][j] == ""):
-                    availableValues = {"1", "2", "3",
-                                       "4", "5", "6", "7", "8", "9"}
+                    availableValues = self.__availableSlotValues.copy()
                     for slot in self.board[i]:
                         if (slot in availableValues):
                             availableValues.remove(slot)
@@ -77,6 +86,7 @@ class Sudoku:
                         slot = self.board[row][j]
                         if (slot in availableValues):
                             availableValues.remove(slot)
+                    # TODO: Add check for slots in square here
                     availableSize = len(availableValues)
                     if (availableSize < amtOfRules):
                         rules = []

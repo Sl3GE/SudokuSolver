@@ -9,9 +9,9 @@ def sudokuBacktrackSolver(stateList: list[Sudoku], depth: int):
     rules = state.getNextSlotRules()
     for rule in rules:
         newState = state.applyRule(rule)
-        if (newState.isBoardValid()):
+        if (newState.isBoardValid()): # This step may be unnecessary due to how "Sudoku.getNetSlotRules()" is supposed to work
             result = sudokuBacktrackSolver([newState] + copy.deepcopy(stateList), depth+1)
-            if (isinstance(result, Sudoku)):
+            if (result != False):
                 return result
     return False
 

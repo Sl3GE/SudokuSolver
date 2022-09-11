@@ -1,7 +1,6 @@
 import sudoku_solver as ss
 from SudokuFactory import SudokuFactory
 from time import time
-from copy import deepcopy
 
 def solver_efficiency_comparison_test(rounds: int = 1, boardDifficulty: int = 5):
     '''
@@ -27,4 +26,4 @@ def solver_efficiency_comparison_test(rounds: int = 1, boardDifficulty: int = 5)
 
 
 if __name__ == "__main__":
-    solver_efficiency_comparison_test(50,6)
+    solver_efficiency_comparison_test(10,6)
