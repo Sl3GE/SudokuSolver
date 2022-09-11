@@ -16,6 +16,26 @@ def sudokuBacktrackSolver(stateList: list[Sudoku], depth: int):
                 return result
     return False
 
+def sudokuBacktrackLocalizedSolver(stateList: list[Sudoku], depth: int):
+    '''
+    Same as sudokuBacktrackSolver but using localized slot validation
+    
+    Currently tested to take more time than normal one
+    '''
+    state: Sudoku = stateList[0]
+    if (state.isBoardComplete()):
+        return state
+    rules = state.getNextSlotRules()
+    for rule in rules:
+        newState = copy.deepcopy(state)
+        stateValidity = newState.applyRuleSafely(rule)
+        if (stateValidity):
+            result = sudokuBacktrackSolver(
+                [newState] + copy.deepcopy(stateList), depth+1)
+            if (isinstance(result, Sudoku)):
+                return result
+    return False
+
 
 if __name__ == "__main__":
     import sys
