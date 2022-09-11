@@ -20,7 +20,7 @@ def solver_efficiency_comparison_test(rounds: int = 1, boardDifficulty: int = 5)
     # Test "sudoku_solver.sudokuBacktrackLocalizedSolver"
     start = time()
     for i in range(rounds):
-        ss.sudokuBacktrackLocalizedSolver([board], 0)
+        ss.sudokuBacktrackSolver([board], 0)
     lengthOfTime = time() - start
     print("Localized Solver Time: "+str(lengthOfTime))
 

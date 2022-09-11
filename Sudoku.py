@@ -75,6 +75,8 @@ class Sudoku:
         '''
         rules = []
         amtOfRules = 10
+        # TODO: Refactor to go through all of one column, row, or square at once and keep its value available the whole time
+        # I suggest square
         for i in range(9):
             for j in range(9):
                 if (self.board[i][j] == ""):
@@ -86,13 +88,22 @@ class Sudoku:
                         slot = self.board[row][j]
                         if (slot in availableValues):
                             availableValues.remove(slot)
-                    # TODO: Add check for slots in square here
+                            
+                    squarePos = (floor(i/3)*3, floor(j/3)*3)
+                    for k in range(3):
+                        for l in range(3):
+                            slot = self.board[squarePos[0]+k][squarePos[1]+l]
+                            if (slot in availableValues):
+                                availableValues.remove(slot)
+                    
                     availableSize = len(availableValues)
-                    if (availableSize < amtOfRules):
+                    if (availableSize > 0 and availableSize < amtOfRules):
+                        amtOfRules = availableSize
                         rules = []
                         for k in availableValues:
                             rules.append([i, j, int(k)])
-                        amtOfRules = availableSize
+                        if (amtOfRules == 1):
+                            return rules
         return rules
 
 
